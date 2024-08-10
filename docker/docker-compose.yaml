@@ -1,0 +1,116 @@
+version: '3'
+
+services:
+  wg-easy:
+    container_name: wg-easy
+    image: ghcr.io/wg-easy/wg-easy
+
+    environment:
+      - PASSWORD=${WG_PASSWORD}
+      - WG_HOST=${WG_HOST_IP}
+
+    volumes:
+      - ./config:/etc/wireguard
+      - /lib/modules:/lib/modules
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821/tcp"
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    ports:
+      - "1337:80"
+    environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_HOST_IP}
+    volumes:
+      - ./nextcloud/html:/var/www/html
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    ports:
+      - "3001:3001"
+    environment:
+      - SERVER_IP=${UPTIME_KUMA_HOST_IP}
+    volumes:
+      - ./uptime-kuma/data:/app/data
+    restart: unless-stopped
+
+  rocketchat:
+    image: rocketchat/rocket.chat:latest
+    container_name: rocketchat
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URL=mongodb://${MONGO_HOST}:${MONGO_PORT}/rocketchat
+      - ROOT_URL=http://${ROCKETCHAT_HOST_IP}:3000
+      - MONGO_OPLOG_URL=mongodb://${MONGO_HOST}:${MONGO_PORT}/local
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:4.0
+    container_name: mongo
+    volumes:
+      - ./rocketchat/mongo:/data/db
+    restart: unless-stopped
+
+  homer:
+    image: b4bz/homer
+    container_name: homer
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./homer/config.yml:/www/config.yml
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: unless-stopped
+
+  taiga-back:
+    image: ghcr.io/taigaio/taiga-back:latest
+    container_name: taiga-back
+    environment:
+      - POSTGRES_HOST=${TAIGA_DB_HOST}
+      - POSTGRES_DB=${TAIGA_DB_NAME}
+      - POSTGRES_USER=${TAIGA_DB_USER}
+      - POSTGRES_PASSWORD=${TAIGA_DB_PASSWORD}
+    volumes:
+      - ./taiga-back:/taiga-back
+    depends_on:
+      - taiga-db
+
+  taiga-frontend:
+    image: ghcr.io/taigaio/taiga-front:latest
+    container_name: taiga-frontend
+    ports:
+      - "9100:80"
+    depends_on:
+      - taiga-back
+
+  taiga-db:
+    image: postgres:13
+    container_name: taiga-db
+    environment:
+      - POSTGRES_DB=${TAIGA_DB_NAME}
+      - POSTGRES_USER=${TAIGA_DB_USER}
+      - POSTGRES_PASSWORD=${TAIGA_DB_PASSWORD}
+    volumes:
+      - ./taiga-db:/var/lib/postgresql/data

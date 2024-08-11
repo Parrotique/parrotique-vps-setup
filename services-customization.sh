@@ -1,4 +1,4 @@
-i#!/bin/bash
+#!/bin/bash
 echo -e "\e[32m[*] Basic services setup\e[0m"
 # Function for reading users responses
 read_input() {

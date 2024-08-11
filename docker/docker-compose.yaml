@@ -7,7 +7,7 @@ services:
 
     environment:
       - PASSWORD=${WG_PASSWORD}
-      - WG_HOST=${WG_HOST_IP}
+      - WG_HOST=localhost
 
     volumes:
       - ./config:/etc/wireguard
@@ -29,7 +29,7 @@ services:
     ports:
       - "1337:80"
     environment:
-      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_HOST_IP}
+      - NEXTCLOUD_TRUSTED_DOMAINS=localhost
     volumes:
       - ./nextcloud/html:/var/www/html
     restart: unless-stopped
@@ -40,7 +40,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - SERVER_IP=${UPTIME_KUMA_HOST_IP}
+      - SERVER_IP=localhost
     volumes:
       - ./uptime-kuma/data:/app/data
     restart: unless-stopped
@@ -51,9 +51,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - MONGO_URL=mongodb://${MONGO_HOST}:${MONGO_PORT}/rocketchat
-      - ROOT_URL=http://${ROCKETCHAT_HOST_IP}:3000
-      - MONGO_OPLOG_URL=mongodb://${MONGO_HOST}:${MONGO_PORT}/local
+      - MONGO_URL=mongodb://localhost:27017/rocketchat
+      - ROOT_URL=http://localhost:3000
+      - MONGO_OPLOG_URL=mongodb://localhost:27017/local
     depends_on:
       - mongo
     restart: unless-stopped
@@ -88,7 +88,7 @@ services:
     image: ghcr.io/taigaio/taiga-back:latest
     container_name: taiga-back
     environment:
-      - POSTGRES_HOST=${TAIGA_DB_HOST}
+      - POSTGRES_HOST=localhost
       - POSTGRES_DB=${TAIGA_DB_NAME}
       - POSTGRES_USER=${TAIGA_DB_USER}
       - POSTGRES_PASSWORD=${TAIGA_DB_PASSWORD}

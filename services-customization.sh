@@ -53,6 +53,6 @@ cat docker/.env
 # Running docker containers
 cd docker
 echo -e "\e[32m[*] Starting Docker Compose\e[0m"
-docker-compose up -d
+sudo docker-compose up -d
 
 echo -e "\e[32m[*] Docker containers setup and installation are completed\e[0m"

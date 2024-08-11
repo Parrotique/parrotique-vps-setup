@@ -1,4 +1,4 @@
-echo -e "\e[32m[*] Firewall setup\e[0m"
+echo -e "\e[32m[*] UFW setup\e[0m"
 
 #installing ufw
 sudo apt install -y ufw
@@ -22,4 +22,4 @@ sudo ufw allow from localhost to any port 9100
 #status check
 sudo ufw status verbose
 
-echo -e "\e[32m[*] VPN setup is completed\e[0m"
+echo -e "\e[32m[*] UFW setup was completed\e[0m"

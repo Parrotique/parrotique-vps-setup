@@ -1,5 +1,5 @@
-#!/bin/bash
-echo -e "\e[32m[*] Basic setup for services\e[0m"
+i#!/bin/bash
+echo -e "\e[32m[*] Basic services setup\e[0m"
 # Function for reading users responses
 read_input() {
     local prompt="$1"
@@ -55,4 +55,4 @@ cd docker
 echo -e "\e[32m[*] Starting Docker Compose\e[0m"
 sudo docker-compose up -d
 
-echo -e "\e[32m[*] Docker containers setup and installation are completed\e[0m"
+echo -e "\e[32m[*] Basic services setup was completed\e[0m"

@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo -e "\e[32m[*] Basic setup for services\e[0m"
 # Function for reading users responses
 read_input() {
     local prompt="$1"
@@ -33,11 +33,7 @@ install_portainer=$(ask_container "Portainer" "$DEFAULT")
 install_taiga=$(ask_container "Taiga" "$DEFAULT")
 
 # Asking for Hostname and additional parameters
-IP_ADDRESS=$(read_input "Enter IP address" "localhost")
 WG_PASSWORD=$(read_input "Enter password for wg-easy" "admin")
-MONGO_HOST=$(read_input "Enter MongoDB host" "localhost")
-MONGO_PORT=$(read_input "Enter MongoDB port" "27017")
-TAIGA_DB_HOST=$(read_input "Enter Taiga database host" "localhost")
 TAIGA_DB_NAME=$(read_input "Enter Taiga database name" "admin")
 TAIGA_DB_USER=$(read_input "Enter Taiga database user" "admin")
 TAIGA_DB_PASSWORD=$(read_input "Enter Taiga database password" "admin")
@@ -46,13 +42,6 @@ TAIGA_DB_PASSWORD=$(read_input "Enter Taiga database password" "admin")
 mkdir -p docker
 cat > docker/.env <<EOF
 WG_PASSWORD=${WG_PASSWORD}
-WG_HOST_IP=${IP_ADDRESS}
-NEXTCLOUD_HOST_IP=${IP_ADDRESS}
-UPTIME_KUMA_HOST_IP=${IP_ADDRESS}
-MONGO_HOST=${MONGO_HOST}
-MONGO_PORT=${MONGO_PORT}
-ROCKETCHAT_HOST_IP=${IP_ADDRESS}
-TAIGA_DB_HOST=${TAIGA_DB_HOST}
 TAIGA_DB_NAME=${TAIGA_DB_NAME}
 TAIGA_DB_USER=${TAIGA_DB_USER}
 TAIGA_DB_PASSWORD=${TAIGA_DB_PASSWORD}
@@ -63,7 +52,7 @@ cat docker/.env
 
 # Running docker containers
 cd docker
-echo "Starting Docker Compose..."
+echo -e "\e[32m[*] Starting Docker Compose\e[0m"
 docker-compose up -d
 
-echo "Setup completed. Docker Compose has been started. You can start your work"
+echo -e "\e[32m[*] Docker containers setup and installation are completed\e[0m"
